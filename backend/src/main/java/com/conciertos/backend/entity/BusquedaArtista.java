@@ -3,22 +3,22 @@ package com.conciertos.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name= "usuarios")
+@Table(name = "busquedas_artistas")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Usuario {
+public class BusquedaArtista {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    @Column(unique = true)
-    private String correo;
-    private String password;
-    @Enumerated(EnumType.STRING)
-    private Rol rol;
+    private String nombreArtista;
+
+    private LocalDateTime fechaBusqueda;
 }

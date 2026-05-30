@@ -2,6 +2,7 @@ package com.conciertos.backend.controller;
 
 import com.conciertos.backend.dto.LoginRequest;
 import com.conciertos.backend.dto.LoginResponse;
+import com.conciertos.backend.entity.Rol;
 import com.conciertos.backend.entity.Usuario;
 import com.conciertos.backend.repository.UsuarioRepository;
 import com.conciertos.backend.security.JwtService;
@@ -21,8 +22,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public Usuario register(@RequestBody Usuario usuario) {
-
+        if (usuario.getCorreo().equalsIgnoreCase("admin@ticketchain.com")
+            || usuario.getCorreo().equalsIgnoreCase("isai@ticketchain.com"))
+        {
+            usuario.setRol(Rol.ADMIN);
+        } else {
+            usuario.setRol(Rol.USER);
+        }
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+            throw new RuntimeException("El correo ya está registrado");
+        }
 
         return usuarioRepository.save(usuario);
     }
@@ -42,8 +53,8 @@ public class AuthController {
             throw new RuntimeException("Password incorrecto");
         }
 
-        String token = jwtService.generarToken(usuario.getCorreo());
+        String token = jwtService.generarToken(usuario.getCorreo(), usuario.getRol().name());
 
-        return new LoginResponse(token);
+        return new LoginResponse(token, usuario.getCorreo(), usuario.getRol().name());
     }
 }

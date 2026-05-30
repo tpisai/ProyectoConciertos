@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginResponse {
+public class TopArtistaDTO {
 
-    private String token;
-    private String correo;
-    private String rol;
+    private String artista;
+
+    private Long cantidadBusquedas;
 }
